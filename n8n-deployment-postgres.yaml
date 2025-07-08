@@ -1,0 +1,39 @@
+# Mapeia o PVC para /var/lib/postgresql/data
+# Postgres usará /var/lib/postgresql/data/n8n-data (que ainda NÃO existe)
+# Ele criará esse subdiretório novo e inicializa perfeito
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  namespace: n8n
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:latest
+        args: ["-c", "max_connections=300"]  
+        env:
+        - name: POSTGRES_DB
+          value: admin
+        - name: POSTGRES_USER
+          value: postgres
+        - name: POSTGRES_PASSWORD
+          value: superSenhaAdmin
+        - name: PGDATA
+          value: /var/lib/postgresql/data/n8n-data
+        volumeMounts:
+        - name: postgres-storage
+          mountPath: /var/lib/postgresql/data  # <<--- VOLUME vai para o diretório base!
+      volumes:
+      - name: postgres-storage
+        persistentVolumeClaim:
+          claimName: postgres-pvc

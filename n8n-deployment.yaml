@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: n8n
+  namespace: n8n
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      app: n8n
+  template:
+    metadata:
+      labels:
+        app: n8n
+    spec:
+      containers:
+      - name: n8n
+        image: n8nio/n8n:latest
+        env:
+        # Configuração do banco de dados PostgreSQL
+        - name: DB_TYPE
+          value: postgresdb
+        - name: DB_POSTGRESDB_HOST
+          value: postgres.n8n.svc.cluster.local
+        - name: DB_POSTGRESDB_PORT
+          value: "5432"
+        - name: DB_POSTGRESDB_DATABASE
+          value: n8n
+        - name: DB_POSTGRESDB_USER
+          value: n8n
+        - name: DB_POSTGRESDB_PASSWORD
+          value: n8neconomia
+
+        # Corrigir erro "X-Forwarded-For"
+        - name: N8N_BASIC_AUTH_PROXY
+          value: "true"
+
+        # Configuração  porta
+        - name: N8N_PORT
+          value: "5678"
+
+        # Configuração de rede para proxy reverso
+        - name: N8N_PROTOCOL
+          value: "https"
+        - name: N8N_HOST
+          value: "n8n-planejamento.economia.go.gov.br" # Substituir pelo seu domínio
+        - name: N8N_EDITOR_BASE_URL
+          value: "https://n8n-planejamento.economia.go.gov.br"
+        - name: N8N_WEBHOOK_URL
+          value: "https://n8n-planejamento.economia.go.gov.br/"
+
+        # Configuração de autenticação no painel
+        - name: N8N_BASIC_AUTH_ACTIVE
+          value: "true"
+        - name: N8N_BASIC_AUTH_USER
+          value: admin
+        - name: N8N_BASIC_AUTH_PASSWORD
+          value: adminpassword
+   
+        # Forçar correção de permissões no config
+        - name: N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS
+          value: "true"
+
+        volumeMounts:
+        - name: n8n-storage
+          mountPath: /home/node/.n8n  # Corrigido o caminho correto
+      volumes:
+      - name: n8n-storage
+        persistentVolumeClaim:
+          claimName: n8n-pvc-new
