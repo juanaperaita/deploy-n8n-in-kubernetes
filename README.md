@@ -10,4 +10,11 @@ Steps:
 5) Instalar n8n-ingress.yaml
 6) Instalar n8n-deployment-postgress.yaml
 7) Criar database no banco.
+- psql -d postgres -U postgres
+- CREATE DATABASE n8n;
+- CREATE USER n8n WITH PASSWORD 'n8neconomia';
+- ALTER DATABASE n8n OWNER TO n8n;
+- GRANT ALL PRIVILEGES ON DATABASE n8n TO n8n;
+- \q
+- psql -d n8n -U n8n -W
 8) Instalar n8n-deployment-v2.yaml
