@@ -5,8 +5,8 @@ metadata:
   namespace: n8n
 spec:
   ports:
-    - port: "${DB_POSTGRESDB_PORT}"
-      targetPort: "${DB_POSTGRESDB_PORT}"
+    - port: 5432
+      targetPort: 5432
   selector:
     app: postgres
   clusterIP: None
