@@ -7,7 +7,7 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
-  - host: n8n-planejamento.economia.go.gov.br
+  - host: ${N8N_HOST}"
     http:
       paths:
       - path: /
@@ -16,4 +16,4 @@ spec:
           service:
             name: n8n
             port:
-              number: 5678
+              number: "${N8N_PORT}"

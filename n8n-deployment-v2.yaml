@@ -4,7 +4,7 @@ metadata:
   name: n8n
   namespace: n8n
 spec:
-  replicas: 1  # <-- Suba pelo menos 1 para testar
+  replicas: 1
   selector:
     matchLabels:
       app: n8n
@@ -17,55 +17,45 @@ spec:
       - name: n8n
         image: n8nio/n8n:latest
         env:
-        # Configuração do banco de dados PostgreSQL
+        # database config
         - name: DB_TYPE
-          value: postgresdb
+          value: "${DB_TYPE}"
         - name: DB_POSTGRESDB_HOST
-          value: postgres.n8n.svc.cluster.local
+          value: "${DB_POSTGRESDB_HOST}"
         - name: DB_POSTGRESDB_PORT
-          value: "5432"
+          value: "${DB_POSTGRES_PORT}"
         - name: DB_POSTGRESDB_DATABASE
-          value: n8n
+          value: "${DB_POSTGRESDB_DATABASE}"
         - name: DB_POSTGRESDB_USER
-          value: n8n
+          value: "${DB_POSTGRESDB_USER}"
         - name: DB_POSTGRESDB_PASSWORD
-          value: n8neconomia
+          value: "${DB_POSTGRESDB_PASSWORD}"
 
-        # 🔒 Limita o pool de conexões para evitar "too many connections"
         - name: DB_POSTGRESDB_MAX_POOL_SIZE
           value: "5"
         - name: DB_POSTGRESDB_IDLE_TIMEOUT
           value: "30000"
 
-        # Corrigir erro "X-Forwarded-For"
         - name: N8N_BASIC_AUTH_PROXY
-          value: "true"
-
-        # Configuração da porta
+          value: "${N8N_BASIC_AUTH_PROXY}"
         - name: N8N_PORT
-          value: "5678"
-
-        # Configuração de rede para proxy reverso
+          value: "${N8N_PORT}"
         - name: N8N_PROTOCOL
-          value: "https"
+          value: "${N8N_PROTOCOL}"
         - name: N8N_HOST
-          value: "n8n-planejamento.economia.go.gov.br"
+          value: "${N8N_HOST}"
         - name: N8N_EDITOR_BASE_URL
-          value: "https://n8n-planejamento.economia.go.gov.br"
+          value: "${N8N_EDITOR_BASE_URL}"
         - name: N8N_WEBHOOK_URL
-          value: "https://n8n-planejamento.economia.go.gov.br/"
-
-        # Autenticação no painel
+          value: "${N8N_WEBHOOK_URL}"
         - name: N8N_BASIC_AUTH_ACTIVE
-          value: "true"
+          value: "${N8N_BASIC_AUTH_ACTIVE}"
         - name: N8N_BASIC_AUTH_USER
-          value: admin
+          value: "${N8N_BASIC_AUTH_USER}"
         - name: N8N_BASIC_AUTH_PASSWORD
-          value: adminpassword
-
-        # Corrigir permissões do arquivo /home/node/.n8n/config
+          value: "${N8N_BASIC_AUTH_PASSWORD}"
         - name: N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS
-          value: "true"
+          value: "${N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS}"
 
         volumeMounts:
         - name: n8n-storage
