@@ -6,10 +6,6 @@ This repo has all the files to be able to deploy n8n in a Kubernetes cluster loc
 
 - Minikube, K3s or any Kubernetes cluster.
 - `kubectl` correctly set.
-- The env variables correctly set in the `.env` file. Copy these variables with the following command:
-```shell
-cp .env_dev .env 
-```
 
 If you wish to see if everything is ready before deployment, you can **verify the cluster**:
 ```bash
@@ -49,9 +45,20 @@ Deploy PostgreSQL:
 kubectl apply -f n8n-deployment-postgres.yaml
 ```
 
+Create database:
+```shell
+psql -d postgres -U postgres
+CREATE DATABASE n8n;
+CREATE USER n8n WITH PASSWORD 'n8neconomia';
+ALTER DATABASE n8n OWNER TO n8n;
+GRANT ALL PRIVILEGES ON DATABASE n8n TO n8n;
+\q
+psql -d n8n -U n8n -W
+```
+
 Deploy n8n:
 ```shell
-kubectl apply -f n8n-deployment-v2.yaml
+kubectl apply -f n8n-deployment.yaml
 ```
 
 ### 2. 🔎 Verify that pods are working correctly
